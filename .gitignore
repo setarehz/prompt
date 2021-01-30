@@ -1,0 +1,6 @@
+# dont track
+.vscode/
+venv/
+.idea/
+*/__pycache__/
+__pycache__/
