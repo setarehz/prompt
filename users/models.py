@@ -24,11 +24,11 @@ class CustomUser(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
     name = models.TextField(verbose_name="Full Name", max_length=128)
 
-    class Type(models.IntegerChoices):
-        CLIENT = 1
-        SERVICE_PROVIDER = 2
-
-    type = models.IntegerField(choices=Type.choices)
+    TYPE = (
+        ('1', 'Client'),
+        ('2', 'ServiceProvider')
+    )
+    type = models.CharField(max_length=1, choices=TYPE, blank = False, default='1', help_text='usertype')
 
 
 class ServiceProvider(models.Model):
@@ -49,6 +49,6 @@ class Service(models.Model):
 class Client(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='client_model')
-    services = models.ManyToManyField(Service, related_name='clients', blank=True, null=True)
-    service_providers = models.ManyToManyField(ServiceProvider, on_delete=models.CASCADE, related_name='clients')
+    services = models.ManyToManyField(Service, related_name='clients', blank=True)
+    service_providers = models.ManyToManyField(ServiceProvider, related_name='clients')
 
