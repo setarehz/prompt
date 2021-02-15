@@ -1,5 +1,3 @@
-from enum import auto
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
@@ -34,7 +32,7 @@ class CustomUser(AbstractUser):
 class ServiceProvider(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='sp_model')
-    name = models.TextField(max_length=128)
+    company_name = models.TextField(max_length=128)
     coordinate_x = models.TextField(max_length=128)
     coordinate_y = models.TextField(max_length=128)
 

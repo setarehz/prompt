@@ -8,6 +8,7 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from users import serializers as my_serializers
 from django.shortcuts import get_object_or_404
+from users.models import Client, ServiceProvider, Service
 
 
 class LoginAPIView(APIView):
@@ -31,6 +32,7 @@ class LoginAPIView(APIView):
                     'name': user.name,
                     'username': user.username,
                     'email': user.email,
+                    'type': user.type,
                     'token': token
                 }
             })
@@ -64,6 +66,7 @@ class SignUpAPIView(generics.CreateAPIView):
                     'username': response.data['username'],
                     'name': response.data['name'],
                     'email': response.data['email'],
+                    'type': response.data['type'],
                     'token': token
                 }
             })
@@ -83,6 +86,19 @@ class ServiceProviderUpdateAPIView(generics.UpdateAPIView):
 
 class ClientUpdateAPIView(generics.UpdateAPIView):
     serializer_class = my_serializers.ClientSerializer
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        # obj = get_object_or_404(queryset, user=self.request.user)
+        obj = get_object_or_404(queryset)
+        return obj
+
+    def get_queryset(self):
+        client_id = self.request.data['id']
+        return Client.objects.filter(id=client_id)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 
 class ServiceCreateAPIView(generics.CreateAPIView):
