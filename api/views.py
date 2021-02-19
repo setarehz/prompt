@@ -8,7 +8,7 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from users import serializers as my_serializers
 from django.shortcuts import get_object_or_404
-from users.models import Client, ServiceProvider, Service
+from users.models import Client, ServiceProvider, Service, CustomUser
 
 
 class LoginAPIView(APIView):
@@ -133,3 +133,55 @@ class ServiceListAPIView(generics.ListAPIView):
         return queryset
 
 
+class UserDataRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = my_serializers.UserSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        # obj = get_object_or_404(queryset, user=self.request.user)
+        obj = get_object_or_404(queryset)
+        return obj
+
+    def get_queryset(self):
+        user = self.request.data['id']
+        return CustomUser.objects.filter(id=user)
+
+    def post(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
+class ClientDataRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = my_serializers.ClientSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        # obj = get_object_or_404(queryset, user=self.request.user)
+        obj = get_object_or_404(queryset)
+        return obj
+
+    def get_queryset(self):
+        client = self.request.data['id']
+        return Client.objects.filter(user=client)
+
+    def post(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
+class ServiceProviderDataRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = my_serializers.ServiceProviderSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        # obj = get_object_or_404(queryset, user=self.request.user)
+        obj = get_object_or_404(queryset)
+        return obj
+
+    def get_queryset(self):
+        service_provider = self.request.data['id']
+        return ServiceProvider.objects.filter(user=service_provider)
+
+    def post(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

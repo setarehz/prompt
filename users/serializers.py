@@ -47,3 +47,8 @@ class ServiceSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = my_models.Client
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = my_models.CustomUser
