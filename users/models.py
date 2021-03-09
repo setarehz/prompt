@@ -11,11 +11,6 @@ import uuid
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-        if instance.type == 1:
-            Client.objects.create(user=instance)
-        else:
-            if instance.type == 2:
-                ServiceProvider.objects.create(user=instance)
 
 
 class CustomUser(AbstractUser):
@@ -32,7 +27,14 @@ class CustomUser(AbstractUser):
 class ServiceProvider(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='sp_model')
-    company_name = models.TextField(max_length=128)
+    company_name = models.TextField(max_length=128, null=True)
+    full_name = models.TextField(max_length=128, null=True)
+    address = models.TextField(max_length=128, null=True)
+    postal_code = models.TextField(max_length=128, null=True)
+    country = models.TextField(max_length=128, null=True)
+    phone = models.TextField(max_length=128, null=True)
+    business_phone = models.TextField(max_length=128, null=True)
+    licensed = models.BooleanField(default=False)
     coordinate_x = models.TextField(max_length=128)
     coordinate_y = models.TextField(max_length=128)
 
@@ -47,6 +49,10 @@ class Service(models.Model):
 class Client(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='client_model')
+    address = models.TextField(max_length=128, null=True)
+    postal_code = models.TextField(max_length=128, null=True)
+    phone = models.TextField(max_length=128, null=True)
+    country = models.TextField(max_length=128, null=True)
     services = models.ManyToManyField(Service, related_name='clients', blank=True)
     service_providers = models.ManyToManyField(ServiceProvider, related_name='clients')
 
