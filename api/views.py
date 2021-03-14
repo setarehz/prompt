@@ -12,6 +12,7 @@ from users.models import Client, ServiceProvider, Service, CustomUser
 
 User = get_user_model()
 
+
 class LoginAPIView(APIView):
     serializer_class = my_serializers.LoginSerializer
     permission_classes = [
@@ -212,7 +213,7 @@ class UserDataRetrieveAPIView(generics.RetrieveAPIView):
         return obj
 
     def get_queryset(self):
-        user = self.request.data['id']
+        user = self.kwargs.get('user_id', '')
         return CustomUser.objects.filter(id=user)
 
     def post(self, request, *args, **kwargs):
@@ -230,8 +231,8 @@ class ClientDataRetrieveAPIView(generics.RetrieveAPIView):
         return obj
 
     def get_queryset(self):
-        client = self.request.data['id']
-        return Client.objects.filter(user=client)
+        client_id = self.kwargs.get('client_id', '')
+        return Client.objects.filter(user=client_id)
 
     def post(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -248,7 +249,7 @@ class ServiceProviderDataRetrieveAPIView(generics.RetrieveAPIView):
         return obj
 
     def get_queryset(self):
-        service_provider = self.request.data['id']
+        service_provider = self.kwargs.get('sp_id', '')
         return ServiceProvider.objects.filter(user=service_provider)
 
     def post(self, request, *args, **kwargs):

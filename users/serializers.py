@@ -58,15 +58,17 @@ class ServiceProviderSignUpSerializer(serializers.ModelSerializer):
         return new_user
 
 
-
-class ServiceProviderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = my_models.ServiceProvider
-
-
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = my_models.Service
+
+
+class ServiceProviderSerializer(serializers.ModelSerializer):
+    services = ServiceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = my_models.ServiceProvider
+        fields = '__all__'
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -74,8 +76,10 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = my_models.Client
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = my_models.CustomUser
+        fields = '__all__'
