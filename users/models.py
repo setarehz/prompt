@@ -42,8 +42,14 @@ class ServiceProvider(models.Model):
 class Service(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
     name = models.TextField(max_length=256)
-    datetime = models.DateTimeField(auto_now_add=True)
     service_provider = models.ForeignKey(ServiceProvider, on_delete=models.CASCADE, related_name='services')
+
+
+class SubService(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
+    name = models.TextField(max_length=256)
+    datetime = models.DateTimeField(auto_now_add=True)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='sub_services')
 
 
 class Client(models.Model):
@@ -54,5 +60,12 @@ class Client(models.Model):
     phone = models.TextField(max_length=128, null=True)
     country = models.TextField(max_length=128, null=True)
     services = models.ManyToManyField(Service, related_name='clients', blank=True)
+    sub_services = models.ManyToManyField(SubService, related_name='clients', blank=True)
     service_providers = models.ManyToManyField(ServiceProvider, related_name='clients')
 
+
+class ServiceRequest(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='requests')
+    sub_service = models.ForeignKey(SubService, on_delete=models.CASCADE, related_name='requests')
+    is_accepted = models.BooleanField(default=False)
